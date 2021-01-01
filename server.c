@@ -35,7 +35,7 @@ char *nomcartes[] = {	"Sebastian Moran",
 						"James Moriarty"
 					};
 int joueurCourant;
-
+int listeJoueurs[4]={0,1,2,3};
 void error(const char *msg)
 {
     perror(msg);
@@ -227,7 +227,7 @@ int main(int argc, char *argv[])
     struct sockaddr_in serv_addr, cli_addr;
     int n;
 	int i;
-
+	
     char com;
     char clientIpAddress[256], clientName[256];
     int clientPort;
@@ -348,7 +348,7 @@ int main(int argc, char *argv[])
 	                               reply);
 						}
 
-						sprintf(reply,"M 0");
+						sprintf(reply,"M %d", joueurCourant);
 	                	broadcastMessage(reply);
                 		fsmServer=1;
 					}
@@ -358,16 +358,66 @@ int main(int argc, char *argv[])
 		}
 		else if (fsmServer==1)
 		{
+			//printf("%s\n", buffer);
+			while(joueurCourant != listeJoueurs[joueurCourant]){
+				joueurCourant++;
+			}
+				if (joueurCourant++ > 2)
+					joueurCourant = 0;
+
+			sprintf(reply,"M %d", joueurCourant);
+           	broadcastMessage(reply);
+
 			switch (buffer[0])
 			{
-                	case 'G':
+                	case 'G': // guess guilty
+                	// O X Y  :  x-> id_client ; y-> coupable
+                	// 01234
 				// RAJOUTER DU CODE ICI
+                	printf("%d\n", deck[12]);
+                	printf("%d\n", buffer[4] - '0' );
+                	if ((buffer[4] - '0') == deck[12])
+                	{
+                		// gagne
+                		printf("hhh\n");
+                		printf("%s a gagne le jeu\n", tcpClients[buffer[2] - '0'].name);
+
+                	}else
+                	{
+                		//perdu
+                		printf("%s a perdu\n", tcpClients[buffer[2] - '0'].name);
+                		listeJoueurs[buffer[2] - '0'] = -1; // le joueur ne peut plus jouer
+                	}
+
 				break;
                 	case 'O':
+                	// O X Y  :  x-> id_client ; y-> objet
+                	// 01234
 				// RAJOUTER DU CODE ICI
+
+                	for (int i = 0; i < 4; ++i)
+                	{
+                		if (i != buffer[2] - '0') // tous repondent sauf celui qui demande
+                		{
+                			if (tableCartes[i][(buffer[4] - '0')])
+                				sprintf(reply, "V %d %d 9", i, (buffer[4] - '0'));
+                			else
+                				sprintf(reply, "V %d %d 0", i, (buffer[4] - '0'));
+			                broadcastMessage(reply);
+                		}
+                	}
+
+
 				break;
 			case 'S':
+					// O X Y Z  :  x-> id_client_qui_demande; y-> id_client_qui_repond ; z-> objet
+                	// 0123456
 				// RAJOUTER DU CODE ICI
+
+    			sprintf(reply, "V %d %d %d", (buffer[4] - '0'), (buffer[6] - '0'), tableCartes[(buffer[4] - '0')][(buffer[6] - '0')]);
+                sendMessageToClient(tcpClients[buffer[2] - '0'].ipAddress,
+                       tcpClients[buffer[2] - '0'].port,
+                       reply);                	
 				break;
                 	default:
                         	break;

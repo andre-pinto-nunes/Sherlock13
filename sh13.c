@@ -299,7 +299,7 @@ int main(int argc, char ** argv)
 					if (guiltSel!=-1)
 					{
 						sprintf(sendBuffer,"G %d %d",gId, guiltSel);
-						//sendMessageToServer(argv[1], atoi(argv[2]), sendBuffer);
+						sendMessageToServer(argv[1], atoi(argv[2]), sendBuffer);
 
 					///////////////////////////////////////////////////////////////////////////////////////////////////////// RAJOUTER DU CODE ICI
 
@@ -307,7 +307,7 @@ int main(int argc, char ** argv)
 					else if ((objetSel!=-1) && (joueurSel==-1))
 					{
 						sprintf(sendBuffer,"O %d %d",gId, objetSel);
-						//sendMessageToServer(argv[1], atoi(argv[2]), sendBuffer);
+						sendMessageToServer(argv[1], atoi(argv[2]), sendBuffer);
 
 					///////////////////////////////////////////////////////////////////////////////////////////////////////// RAJOUTER DU CODE ICI
 
@@ -315,7 +315,7 @@ int main(int argc, char ** argv)
 					else if ((objetSel!=-1) && (joueurSel!=-1))
 					{
 						sprintf(sendBuffer,"S %d %d %d",gId, joueurSel,objetSel);
-						//sendMessageToServer(argv[1], atoi(argv[2]), sendBuffer);
+						sendMessageToServer(argv[1], atoi(argv[2]), sendBuffer);
 
 					///////////////////////////////////////////////////////////////////////////////////////////////////////// RAJOUTER DU CODE ICI
 
@@ -375,12 +375,25 @@ int main(int argc, char ** argv)
 				// Message 'M' : le joueur recoit le n° du joueur courant
 				// Cela permet d'affecter goEnabled pour autoriser l'affichage du bouton go
 				case 'M':
+				// Structure du Message: X -> IDjoueur
+				// M X
 					goEnabled = (gbuffer[2] - '0') == gId;
 					// RAJOUTER DU CODE ICI
 
 					break;
 				// Message 'V' : le joueur recoit une valeur de tableCartes
 				case 'V':
+				// Structure du Message: X -> tableCartes
+				// V X Y Z : x-> id ; y -> objet ; z -> nombre d'objets
+				// 0123456
+				if (gbuffer[2] - '0' != gId)
+				{
+					if (gbuffer[6] - '0' == 9)
+						tableCartes[gbuffer[2] - '0'][gbuffer[4] - '0'] = 100;
+					else
+						tableCartes[gbuffer[2] - '0'][gbuffer[4] - '0'] = gbuffer[6] - '0';
+
+				}
 					// RAJOUTER DU CODE ICI
 
 					break;
