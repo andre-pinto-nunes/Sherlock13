@@ -276,13 +276,15 @@ int main(int argc, char *argv[])
      	newsockfd = accept(sockfd, 
                  (struct sockaddr *) &cli_addr, 
                  &clilen);
+     	
      	if (newsockfd < 0) 
           	error("ERROR on accept");
 
      	bzero(buffer,256);
      	n = read(newsockfd,buffer,255);
+     	
      	if (n < 0) 
-		error("ERROR reading from socket");
+			error("ERROR reading from socket");
 
         printf("Received packet from %s:%d\nData: [%s]\n\n",
                 inet_ntoa(cli_addr.sin_addr), ntohs(cli_addr.sin_port), buffer);
@@ -348,20 +350,16 @@ int main(int argc, char *argv[])
 
 						sprintf(reply,"M 0");
 	                	broadcastMessage(reply);
+                		fsmServer=1;
+					}
 
-
-
-
-                fsmServer=1;
-
-				}
-				break;
-                }
-	}
-	else if (fsmServer==1)
-	{
-		switch (buffer[0])
+					break;
+            }
+		}
+		else if (fsmServer==1)
 		{
+			switch (buffer[0])
+			{
                 	case 'G':
 				// RAJOUTER DU CODE ICI
 				break;
@@ -373,10 +371,10 @@ int main(int argc, char *argv[])
 				break;
                 	default:
                         	break;
-		}
+			}
         }
      	close(newsockfd);
-     }
-     close(sockfd);
-     return 0; 
+    }
+    close(sockfd);
+    return 0; 
 }

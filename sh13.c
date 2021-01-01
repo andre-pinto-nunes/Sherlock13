@@ -342,7 +342,7 @@ int main(int argc, char ** argv)
 			{
 				// Message 'I' : le joueur recoit son Id
 				case 'I':
-					gId = (int) gbuffer[2] - '0';
+					gId = gbuffer[2] - '0';
 					printf("Mon ID est :%d\n", gId);
 					// RAJOUTER DU CODE ICI
 
@@ -367,9 +367,7 @@ int main(int argc, char ** argv)
 					b[2] = atoi(strtok(NULL, " \n"));
 
 					for (int i = 0; i < 8; ++i)
-					{
-						tableCartes[gId][atoi(strtok(NULL, " \n"))];
-					}
+						tableCartes[gId][i] = atoi(strtok(NULL, " \n"));
 
 					// RAJOUTER DU CODE ICI
 
