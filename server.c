@@ -44,18 +44,18 @@ void error(const char *msg)
 
 void melangerDeck()
 {
-        int i;
-        int index1,index2,tmp;
+    int i;
+    int index1,index2,tmp;
 
-        for (i=0;i<1000;i++)
-        {
-                index1=rand()%13;
-                index2=rand()%13;
+    for (i=0;i<1000;i++)
+    {
+        index1=rand()%13;
+        index2=rand()%13;
 
-                tmp=deck[index1];
-                deck[index1]=deck[index2];
-                deck[index2]=tmp;
-        }
+        tmp=deck[index1];
+        deck[index1]=deck[index2];
+        deck[index2]=tmp;
+    }
 }
 
 void createTable()
@@ -292,75 +292,68 @@ int main(int argc, char *argv[])
         {
         	switch (buffer[0])
         	{
-                	case 'C':
-                        	sscanf(buffer,"%c %s %d %s", &com, clientIpAddress, &clientPort, clientName);
-                        	printf("COM=%c ipAddress=%s port=%d name=%s\n",com, clientIpAddress, clientPort, clientName);
+                case 'C':
+                	sscanf(buffer,"%c %s %d %s", &com, clientIpAddress, &clientPort, clientName);
+                	printf("COM=%c ipAddress=%s port=%d name=%s\n",com, clientIpAddress, clientPort, clientName);
 
-                        	// fsmServer==0 alors j'attends les connexions de tous les joueurs
-                                strcpy(tcpClients[nbClients].ipAddress,clientIpAddress);
-                                tcpClients[nbClients].port=clientPort;
-                                strcpy(tcpClients[nbClients].name,clientName);
-                                nbClients++;
+                	// fsmServer==0 alors j'attends les connexions de tous les joueurs
+                	strcpy(tcpClients[nbClients].ipAddress,clientIpAddress);
+                	tcpClients[nbClients].port=clientPort;
+                	strcpy(tcpClients[nbClients].name,clientName);
+                	nbClients++;
 
-                                printClients();
+                	printClients();
 
-				// rechercher l'id du joueur qui vient de se connecter
+					// rechercher l'id du joueur qui vient de se connecter
 
-                                id=findClientByName(clientName);
-                                printf("id=%d\n",id);
+                	id=findClientByName(clientName);
+                	printf("id=%d\n",id);
 
-				// lui envoyer un message personnel pour lui communiquer son id
+					// lui envoyer un message personnel pour lui communiquer son id
 
-                                sprintf(reply,"I %d",id);
-                                sendMessageToClient(tcpClients[id].ipAddress,
-                                       tcpClients[id].port,
-                                       reply);
+                	sprintf(reply,"I %d",id);
+                	sendMessageToClient(tcpClients[id].ipAddress,
+                        tcpClients[id].port,
+                        reply);
 
-				// Envoyer un message broadcast pour communiquer a tout le monde la liste des joueurs actuellement
-				// connectes
+					// Envoyer un message broadcast pour communiquer a tout le monde la liste des joueurs actuellement
+					// connectes
 
-                                sprintf(reply,"L %s %s %s %s", tcpClients[0].name, tcpClients[1].name, tcpClients[2].name, tcpClients[3].name);
-                                broadcastMessage(reply);
+                	sprintf(reply,"L %s %s %s %s", tcpClients[0].name, tcpClients[1].name, tcpClients[2].name, tcpClients[3].name);
+                	broadcastMessage(reply);
+	
+					// Si le nombre de joueurs atteint 4, alors on peut lancer le jeu
 
-				// Si le nombre de joueurs atteint 4, alors on peut lancer le jeu
-
-                                if (nbClients==4)
-				{
-					// On envoie ses cartes au joueur 0, ainsi que la ligne qui lui correspond dans tableCartes
-					// RAJOUTER DU CODE ICI
-					for (int i = 0; i < 4; ++i)		// Pour chaque joueur
+	                if (nbClients==4)
 					{
-						sprintf(reply,"D");
+						// Envoie les cartes à tout le monde
+						for (int i = 0; i < 4; ++i)		// Pour chaque joueur
+						{
+							sprintf(reply,"D");
 					
-						for (int j = 3*i; j < 3*i+3; ++j) // On envoie 3 cartes
-						{
-							sprintf(reply + strlen(reply), "%d", deck[j]);
+							for (int j = 3*i; j < 3*i+3; ++j) // On envoie 3 cartes
+							{
+								sprintf(reply + strlen(reply), " %d", deck[j]);
+							}
+	
+							for (int j = 0; j < 8; ++j)					// On envoie sa ligne tableCartes
+							{
+								sprintf(reply + strlen(reply), " %d", tableCartes[i][j]);
+							}
+
+	                        sendMessageToClient(tcpClients[i].ipAddress,
+	                               tcpClients[i].port,
+	                               reply);
 						}
 
-						for (int j = 0; j < 8; ++j)					// On envoie sa ligne tableCartes
-						{
-							sprintf(reply + strlen(reply), "%d", tableCartes[i][j]);
-						}
-
-                        sendMessageToClient(tcpClients[i].ipAddress,
-                               tcpClients[i].port,
-                               reply);
-					}
+						sprintf(reply,"M 0");
+	                	broadcastMessage(reply);
 
 
-					// On envoie ses cartes au joueur 1, ainsi que la ligne qui lui correspond dans tableCartes
-					// RAJOUTER DU CODE ICI
 
-					// On envoie ses cartes au joueur 2, ainsi que la ligne qui lui correspond dans tableCartes
-					// RAJOUTER DU CODE ICI
 
-					// On envoie ses cartes au joueur 3, ainsi que la ligne qui lui correspond dans tableCartes
-					// RAJOUTER DU CODE ICI
+                fsmServer=1;
 
-					// On envoie enfin un message a tout le monde pour definir qui est le joueur courant=0
-					// RAJOUTER DU CODE ICI
-
-                                        fsmServer=1;
 				}
 				break;
                 }

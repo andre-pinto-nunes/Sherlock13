@@ -361,11 +361,15 @@ int main(int argc, char ** argv)
 				case 'D':
 				// Structure du Message: X -> cartes ; Y -> tableCartes
 				// D X X X Y Y Y Y Y Y Y
-				// 0 1 2 3 4 5 6 7 8 9 10
-					b[0] = (int) gbuffer[1] - '0';
-					b[1] = (int) gbuffer[2] - '0';
-					b[2] = (int) gbuffer[3] - '0';
-					printf("%d %d %d \n", b[0], b[1], b[2]);
+					strtok(gbuffer, " "); // Ici on prend la lettre D, on ne fait rien avec et on passe a l'argument suivant
+					b[0] = atoi(strtok(NULL, " \n"));
+					b[1] = atoi(strtok(NULL, " \n"));
+					b[2] = atoi(strtok(NULL, " \n"));
+
+					for (int i = 0; i < 8; ++i)
+					{
+						tableCartes[gId][atoi(strtok(NULL, " \n"))];
+					}
 
 					// RAJOUTER DU CODE ICI
 
@@ -373,6 +377,7 @@ int main(int argc, char ** argv)
 				// Message 'M' : le joueur recoit le n° du joueur courant
 				// Cela permet d'affecter goEnabled pour autoriser l'affichage du bouton go
 				case 'M':
+					goEnabled = (gbuffer[2] - '0') == gId;
 					// RAJOUTER DU CODE ICI
 
 					break;
