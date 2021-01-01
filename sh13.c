@@ -318,6 +318,7 @@ int main(int argc, char ** argv)
 
         if (synchro==1)
         {
+        		// char* split;
                 printf("consomme |%s|\n",gbuffer);
 			switch (gbuffer[0])
 			{
@@ -330,6 +331,11 @@ int main(int argc, char ** argv)
 					break;
 				// Message 'L' : le joueur recoit la liste des joueurs
 				case 'L':
+					strtok(gbuffer, " "); // Ici on prend la lettre L, on ne fait rien avec et on passe a l'argument suivant
+					strcpy(gNames[0], strtok(NULL, " \n"));
+					strcpy(gNames[1], strtok(NULL, " \n"));
+					strcpy(gNames[2], strtok(NULL, " \n"));
+					strcpy(gNames[3], strtok(NULL, " \n"));
 					// RAJOUTER DU CODE ICI
 
 					break;

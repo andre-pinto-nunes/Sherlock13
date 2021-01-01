@@ -14,7 +14,7 @@ $(CLIENT):
 $(SERVEUR):
 	$(CC) -o $@ $@.c  
 
-full: all
+full: clean all
 	gnome-terminal -x sh -c "./sh13 localhost 32000 localhost 32001 client_1; bash"
 	gnome-terminal -x sh -c "./sh13 localhost 32000 localhost 32002 client_2; bash"
 	gnome-terminal -x sh -c "./sh13 localhost 32000 localhost 32003 client_3; bash"
