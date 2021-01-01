@@ -12,18 +12,36 @@
 
 pthread_t thread_serveur_tcp_id;
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+
+// Buffer communication serveur/client
 char gbuffer[256];
+
+// Adresse IP du serveur
 char gServerIpAddress[256];
+
+// Port du serveur
 int gServerPort;
+
+// Adresse IP du client
 char gClientIpAddress[256];
+
+// Port du client
 int gClientPort;
+
+// Nom du Joueur
 char gName[256];
+
+// Noms de tous les joueurs
 char gNames[4][256];
+
+// ID du joueur
 int gId;
+
 int joueurSel;
 int objetSel;
 int guiltSel;
 int guiltGuess[13];
+
 int tableCartes[4][8];
 int b[3];
 int goEnabled;
@@ -341,6 +359,14 @@ int main(int argc, char ** argv)
 					break;
 				// Message 'D' : le joueur recoit ses trois cartes
 				case 'D':
+				// Structure du Message: X -> cartes ; Y -> tableCartes
+				// D X X X Y Y Y Y Y Y Y
+				// 0 1 2 3 4 5 6 7 8 9 10
+					b[0] = (int) gbuffer[1] - '0';
+					b[1] = (int) gbuffer[2] - '0';
+					b[2] = (int) gbuffer[3] - '0';
+					printf("%d %d %d \n", b[0], b[1], b[2]);
+
 					// RAJOUTER DU CODE ICI
 
 					break;

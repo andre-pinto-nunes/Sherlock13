@@ -287,6 +287,7 @@ int main(int argc, char *argv[])
         printf("Received packet from %s:%d\nData: [%s]\n\n",
                 inet_ntoa(cli_addr.sin_addr), ntohs(cli_addr.sin_port), buffer);
 
+        char* temp;
         if (fsmServer==0)
         {
         	switch (buffer[0])
@@ -327,6 +328,25 @@ int main(int argc, char *argv[])
 				{
 					// On envoie ses cartes au joueur 0, ainsi que la ligne qui lui correspond dans tableCartes
 					// RAJOUTER DU CODE ICI
+					for (int i = 0; i < 4; ++i)		// Pour chaque joueur
+					{
+						sprintf(reply,"D");
+					
+						for (int j = 3*i; j < 3*i+3; ++j) // On envoie 3 cartes
+						{
+							sprintf(reply + strlen(reply), "%d", deck[j]);
+						}
+
+						for (int j = 0; j < 8; ++j)					// On envoie sa ligne tableCartes
+						{
+							sprintf(reply + strlen(reply), "%d", tableCartes[i][j]);
+						}
+
+                        sendMessageToClient(tcpClients[i].ipAddress,
+                               tcpClients[i].port,
+                               reply);
+					}
+
 
 					// On envoie ses cartes au joueur 1, ainsi que la ligne qui lui correspond dans tableCartes
 					// RAJOUTER DU CODE ICI
