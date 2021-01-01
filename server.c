@@ -15,15 +15,25 @@ struct _client
         int port;
         char name[40];
 } tcpClients[4];
+
 int nbClients;
 int fsmServer;
 int deck[13]={0,1,2,3,4,5,6,7,8,9,10,11,12};
 int tableCartes[4][8];
-char *nomcartes[]=
-{"Sebastian Moran", "irene Adler", "inspector Lestrade",
-  "inspector Gregson", "inspector Baynes", "inspector Bradstreet",
-  "inspector Hopkins", "Sherlock Holmes", "John Watson", "Mycroft Holmes",
-  "Mrs. Hudson", "Mary Morstan", "James Moriarty"};
+char *nomcartes[] = {	"Sebastian Moran",
+						"Irene Adler",
+						"Inspector Lestrade",
+						"Inspector Gregson",
+						"Inspector Baynes",
+						"Inspector Bradstreet",
+						"Inspector Hopkins",
+						"Sherlock Holmes",
+						"John Watson",
+						"Mycroft Holmes",
+						"Mrs. Hudson",
+						"Mary Morstan",
+						"James Moriarty"
+					};
 int joueurCourant;
 
 void error(const char *msg)
@@ -69,63 +79,63 @@ void createTable()
 			switch (c)
 			{
 				case 0: // Sebastian Moran
-					tableCartes[i][7]++;
-					tableCartes[i][2]++;
+					tableCartes[i][7]++;	// crane
+					tableCartes[i][2]++;	// poing
 					break;
 				case 1: // Irene Adler
-					tableCartes[i][7]++;
-					tableCartes[i][1]++;
-					tableCartes[i][5]++;
+					tableCartes[i][7]++;	// crane
+					tableCartes[i][1]++;	// ampoule
+					tableCartes[i][5]++;	// collier
 					break;
 				case 2: // Inspector Lestrade
-					tableCartes[i][3]++;
-					tableCartes[i][6]++;
-					tableCartes[i][4]++;
+					tableCartes[i][3]++;	// couronne
+					tableCartes[i][6]++;	// oeil
+					tableCartes[i][4]++;	// carnet
 					break;
 				case 3: // Inspector Gregson 
-					tableCartes[i][3]++;
-					tableCartes[i][2]++;
-					tableCartes[i][4]++;
+					tableCartes[i][3]++;	// couronne
+					tableCartes[i][2]++;	// poing
+					tableCartes[i][4]++;	// carnet
 					break;
 				case 4: // Inspector Baynes 
-					tableCartes[i][3]++;
-					tableCartes[i][1]++;
+					tableCartes[i][3]++;	// couronne
+					tableCartes[i][1]++;	// ampoule
 					break;
 				case 5: // Inspector Bradstreet 
-					tableCartes[i][3]++;
-					tableCartes[i][2]++;
+					tableCartes[i][3]++;	// couronne
+					tableCartes[i][2]++;	// poing
 					break;
 				case 6: // Inspector Hopkins 
-					tableCartes[i][3]++;
-					tableCartes[i][0]++;
-					tableCartes[i][6]++;
+					tableCartes[i][3]++;	// couronne
+					tableCartes[i][0]++;	// pipe
+					tableCartes[i][6]++;	// oeil
 					break;
 				case 7: // Sherlock Holmes 
-					tableCartes[i][0]++;
-					tableCartes[i][1]++;
-					tableCartes[i][2]++;
+					tableCartes[i][0]++;	// pipe
+					tableCartes[i][1]++;	// ampoule
+					tableCartes[i][2]++;	// poing
 					break;
 				case 8: // John Watson 
-					tableCartes[i][0]++;
-					tableCartes[i][6]++;
-					tableCartes[i][2]++;
+					tableCartes[i][0]++;	// pipe
+					tableCartes[i][6]++;	// oeil
+					tableCartes[i][2]++;	// poing
 					break;
 				case 9: // Mycroft Holmes 
-					tableCartes[i][0]++;
-					tableCartes[i][1]++;
-					tableCartes[i][4]++;
+					tableCartes[i][0]++;	// pipe
+					tableCartes[i][1]++;	// ampoule
+					tableCartes[i][4]++;	// carnet
 					break;
 				case 10: // Mrs. Hudson 
-					tableCartes[i][0]++;
-					tableCartes[i][5]++;
+					tableCartes[i][0]++;	// pipe
+					tableCartes[i][5]++;	// collier
 					break;
 				case 11: // Mary Morstan 
-					tableCartes[i][4]++;
-					tableCartes[i][5]++;
+					tableCartes[i][4]++;	// carnet
+					tableCartes[i][5]++;	// collier
 					break;
 				case 12: // James Moriarty 
-					tableCartes[i][7]++;
-					tableCartes[i][1]++;
+					tableCartes[i][7]++;	// crane
+					tableCartes[i][1]++;	// ampoule
 					break;
 			}
 		}
@@ -211,37 +221,42 @@ void broadcastMessage(char *mess)
 
 int main(int argc, char *argv[])
 {
-     int sockfd, newsockfd, portno;
-     socklen_t clilen;
-     char buffer[256];
-     struct sockaddr_in serv_addr, cli_addr;
-     int n;
+    int sockfd, newsockfd, portno;
+    socklen_t clilen;
+    char buffer[256];
+    struct sockaddr_in serv_addr, cli_addr;
+    int n;
 	int i;
 
-        char com;
-        char clientIpAddress[256], clientName[256];
-        int clientPort;
-        int id;
-        char reply[256];
+    char com;
+    char clientIpAddress[256], clientName[256];
+    int clientPort;
+    int id;
+    char reply[256];
 
 
-     if (argc < 2) {
-         fprintf(stderr,"ERROR, no port provided\n");
-         exit(1);
-     }
-     sockfd = socket(AF_INET, SOCK_STREAM, 0);
-     if (sockfd < 0) 
+    if (argc < 2) {
+        fprintf(stderr,"ERROR, no port provided\n");
+        exit(1);
+    }
+
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+     
+    if (sockfd < 0) 
         error("ERROR opening socket");
-     bzero((char *) &serv_addr, sizeof(serv_addr));
-     portno = atoi(argv[1]);
-     serv_addr.sin_family = AF_INET;
-     serv_addr.sin_addr.s_addr = INADDR_ANY;
-     serv_addr.sin_port = htons(portno);
-     if (bind(sockfd, (struct sockaddr *) &serv_addr,
-              sizeof(serv_addr)) < 0) 
-              error("ERROR on binding");
-     listen(sockfd,5);
-     clilen = sizeof(cli_addr);
+     
+    bzero((char *) &serv_addr, sizeof(serv_addr));
+    portno = atoi(argv[1]);
+    serv_addr.sin_family = AF_INET;
+    serv_addr.sin_addr.s_addr = INADDR_ANY;
+    serv_addr.sin_port = htons(portno);
+     
+    if (bind(sockfd, (struct sockaddr *) &serv_addr,
+            sizeof(serv_addr)) < 0) 
+            error("ERROR on binding");
+     
+    listen(sockfd,5);
+    clilen = sizeof(cli_addr);
 
 	printDeck();
 	melangerDeck();

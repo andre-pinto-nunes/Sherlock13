@@ -30,10 +30,20 @@ int goEnabled;
 int connectEnabled;
 
 char *nbobjets[]={"5","5","5","5","4","3","3","3"};
-char *nbnoms[]={"Sebastian Moran", "irene Adler", "inspector Lestrade",
-  "inspector Gregson", "inspector Baynes", "inspector Bradstreet",
-  "inspector Hopkins", "Sherlock Holmes", "John Watson", "Mycroft Holmes",
-  "Mrs. Hudson", "Mary Morstan", "James Moriarty"};
+char *nbnoms[]={	"Sebastian Moran",
+					"Irene Adler",
+					"Inspector Lestrade",
+					"Inspector Gregson",
+					"Inspector Baynes",
+					"Inspector Bradstreet",
+					"Inspector Hopkins",
+					"Sherlock Holmes",
+					"John Watson",
+					"Mycroft Holmes",
+					"Mrs. Hudson",
+					"Mary Morstan",
+					"James Moriarty"
+				};
 
 volatile int synchro;
 
@@ -235,57 +245,61 @@ int main(int argc, char ** argv)
 			case  SDL_MOUSEBUTTONDOWN:
 				SDL_GetMouseState( &mx, &my );
 				//printf("mx=%d my=%d\n",mx,my);
-				if ((mx<200) && (my<50) && (connectEnabled==1))
+				if ((mx<200) && (my<50) && (connectEnabled==1)) // bouton connect
 				{
 					sprintf(sendBuffer,"C %s %d %s",gClientIpAddress,gClientPort,gName);
 
-					// RAJOUTER DU CODE ICI
+					sendMessageToServer(argv[1], atoi(argv[2]), sendBuffer);
+					///////////////////////////////////////////////////////////////////////////////////////////////////////// RAJOUTER DU CODE ICI
 
 					connectEnabled=0;
 				}
-				else if ((mx>=0) && (mx<200) && (my>=90) && (my<330))
+				else if ((mx>=0) && (mx<200) && (my>=90) && (my<330)) // selection d'un joueur
 				{
 					joueurSel=(my-90)/60;
 					guiltSel=-1;
 				}
-				else if ((mx>=200) && (mx<680) && (my>=0) && (my<90))
+				else if ((mx>=200) && (mx<680) && (my>=0) && (my<90)) // selection d'un objet
 				{
 					objetSel=(mx-200)/60;
 					guiltSel=-1;
 				}
-				else if ((mx>=100) && (mx<250) && (my>=350) && (my<740))
+				else if ((mx>=100) && (mx<250) && (my>=350) && (my<740)) // selection d'un coupable
 				{
 					joueurSel=-1;
 					objetSel=-1;
 					guiltSel=(my-350)/30;
 				}
-				else if ((mx>=250) && (mx<300) && (my>=350) && (my<740))
+				else if ((mx>=250) && (mx<300) && (my>=350) && (my<740)) // croix sur un suspect
 				{
 					int ind=(my-350)/30;
 					guiltGuess[ind]=1-guiltGuess[ind];
 				}
-				else if ((mx>=500) && (mx<700) && (my>=350) && (my<450) && (goEnabled==1))
+				else if ((mx>=500) && (mx<700) && (my>=350) && (my<450) && (goEnabled==1))    // bouton go
 				{
 					printf("go! joueur=%d objet=%d guilt=%d\n",joueurSel, objetSel, guiltSel);
 					if (guiltSel!=-1)
 					{
 						sprintf(sendBuffer,"G %d %d",gId, guiltSel);
+						//sendMessageToServer(argv[1], atoi(argv[2]), sendBuffer);
 
-					// RAJOUTER DU CODE ICI
+					///////////////////////////////////////////////////////////////////////////////////////////////////////// RAJOUTER DU CODE ICI
 
 					}
 					else if ((objetSel!=-1) && (joueurSel==-1))
 					{
 						sprintf(sendBuffer,"O %d %d",gId, objetSel);
+						//sendMessageToServer(argv[1], atoi(argv[2]), sendBuffer);
 
-					// RAJOUTER DU CODE ICI
+					///////////////////////////////////////////////////////////////////////////////////////////////////////// RAJOUTER DU CODE ICI
 
 					}
 					else if ((objetSel!=-1) && (joueurSel!=-1))
 					{
 						sprintf(sendBuffer,"S %d %d %d",gId, joueurSel,objetSel);
+						//sendMessageToServer(argv[1], atoi(argv[2]), sendBuffer);
 
-					// RAJOUTER DU CODE ICI
+					///////////////////////////////////////////////////////////////////////////////////////////////////////// RAJOUTER DU CODE ICI
 
 					}
 				}
@@ -305,36 +319,38 @@ int main(int argc, char ** argv)
         if (synchro==1)
         {
                 printf("consomme |%s|\n",gbuffer);
-		switch (gbuffer[0])
-		{
-			// Message 'I' : le joueur recoit son Id
-			case 'I':
-				// RAJOUTER DU CODE ICI
+			switch (gbuffer[0])
+			{
+				// Message 'I' : le joueur recoit son Id
+				case 'I':
+					gId = (int) gbuffer[2] - '0';
+					printf("Mon ID est :%d\n", gId);
+					// RAJOUTER DU CODE ICI
 
-				break;
-			// Message 'L' : le joueur recoit la liste des joueurs
-			case 'L':
-				// RAJOUTER DU CODE ICI
+					break;
+				// Message 'L' : le joueur recoit la liste des joueurs
+				case 'L':
+					// RAJOUTER DU CODE ICI
 
-				break;
-			// Message 'D' : le joueur recoit ses trois cartes
-			case 'D':
-				// RAJOUTER DU CODE ICI
+					break;
+				// Message 'D' : le joueur recoit ses trois cartes
+				case 'D':
+					// RAJOUTER DU CODE ICI
 
-				break;
-			// Message 'M' : le joueur recoit le n° du joueur courant
-			// Cela permet d'affecter goEnabled pour autoriser l'affichage du bouton go
-			case 'M':
-				// RAJOUTER DU CODE ICI
+					break;
+				// Message 'M' : le joueur recoit le n° du joueur courant
+				// Cela permet d'affecter goEnabled pour autoriser l'affichage du bouton go
+				case 'M':
+					// RAJOUTER DU CODE ICI
 
-				break;
-			// Message 'V' : le joueur recoit une valeur de tableCartes
-			case 'V':
-				// RAJOUTER DU CODE ICI
+					break;
+				// Message 'V' : le joueur recoit une valeur de tableCartes
+				case 'V':
+					// RAJOUTER DU CODE ICI
 
-				break;
-		}
-		synchro=0;
+					break;
+			}
+			synchro=0;
         }
 
         SDL_Rect dstrect_grille = { 512-250, 10, 500, 350 };
