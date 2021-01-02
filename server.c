@@ -18,6 +18,7 @@ struct _client
 
 int nbClients;
 int fsmServer;
+int jeufini = 0;
 int deck[13]={0,1,2,3,4,5,6,7,8,9,10,11,12};
 int tableCartes[4][8];
 char *nomcartes[] = {	"Sebastian Moran",
@@ -378,12 +379,20 @@ int main(int argc, char *argv[])
                 	{
                 		// gagne
                 		printf("%s a gagne le jeu\n", tcpClients[buffer[2] - '0'].name);
+                        jeufini = 1;
+
+			            sprintf(reply,"F %d", joueurCourant);
+                       	broadcastMessage(reply);
 
                 	}else
                 	{
                 		//perdu
                 		printf("%s a accusé un inocent.\nIl a perdu et ne peut plus jouer\n", tcpClients[buffer[2] - '0'].name);
                 		listeJoueurs[joueurCourant] = 0; // le joueur ne peut plus jouer
+			            sprintf(reply,"F 4");
+                        sendMessageToClient(tcpClients[buffer[2] - '0'].ipAddress,
+                                tcpClients[buffer[2] - '0'].port,
+                                reply);   
 
                 	}
 
@@ -414,9 +423,7 @@ int main(int argc, char *argv[])
                 	// 0123456
 
     			sprintf(reply, "V %d %d %d", (buffer[4] - '0'), (buffer[6] - '0'), tableCartes[(buffer[4] - '0')][(buffer[6] - '0')]);
-                sendMessageToClient(tcpClients[buffer[2] - '0'].ipAddress,
-                       tcpClients[buffer[2] - '0'].port,
-                       reply);                	
+                broadcastMessage(reply);               	
 				break;
                 	default:
                         	break;
@@ -429,10 +436,14 @@ int main(int argc, char *argv[])
                 if (++joueurCourant > 3)
 					joueurCourant = 0;
 			}
-
-            printf("C'est au tour de %s\n", tcpClients[joueurCourant].name);
-			sprintf(reply,"M %d", joueurCourant);
-           	broadcastMessage(reply);
+    
+            if(!jeufini){
+                printf("C'est au tour de %s\n", tcpClients[joueurCourant].name);
+    			sprintf(reply,"M %d", joueurCourant);
+            }else{
+    			sprintf(reply,"M 4");
+            }
+               	broadcastMessage(reply);
         }
      	close(newsockfd);
     }

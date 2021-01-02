@@ -45,6 +45,7 @@ int guiltGuess[13];
 int tableCartes[4][8];
 int b[3];
 int goEnabled;
+int findejeu;
 int connectEnabled;
 
 char *nbobjets[]={"5","5","5","5","4","3","3","3"};
@@ -181,7 +182,7 @@ int main(int argc, char ** argv)
  
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, 0);
 
-    SDL_Surface *deck[13],*objet[8],*gobutton,*connectbutton;
+    SDL_Surface *deck[13],*objet[8],*gobutton,*connectbutton,*victoire,*defaite;
 
 	deck[0] = IMG_Load("SH13_0.png");
 	deck[1] = IMG_Load("SH13_1.png");
@@ -207,6 +208,8 @@ int main(int argc, char ** argv)
 	objet[7] = IMG_Load("SH13_crane_120x120.png");
 
 	gobutton = IMG_Load("gobutton.png");
+	victoire = IMG_Load("victoire.png");
+	defaite = IMG_Load("defaite.png");
 	connectbutton = IMG_Load("connectbutton.png");
 
 	strcpy(gNames[0],"-");
@@ -230,9 +233,10 @@ int main(int argc, char ** argv)
 			tableCartes[i][j]=-1;
 
 	goEnabled=0;
+	findejeu=-1;
 	connectEnabled=1;
 
-    SDL_Texture *texture_deck[13],*texture_gobutton,*texture_connectbutton,*texture_objet[8];
+    SDL_Texture *texture_deck[13],*texture_gobutton,*texture_connectbutton,*texture_objet[8],*texture_victoire,*texture_defaite;
 
 	for (i=0;i<13;i++)
 		texture_deck[i] = SDL_CreateTextureFromSurface(renderer, deck[i]);
@@ -240,6 +244,8 @@ int main(int argc, char ** argv)
 		texture_objet[i] = SDL_CreateTextureFromSurface(renderer, objet[i]);
 
     texture_gobutton = SDL_CreateTextureFromSurface(renderer, gobutton);
+    texture_victoire = SDL_CreateTextureFromSurface(renderer, victoire);
+    texture_defaite  = SDL_CreateTextureFromSurface(renderer, defaite );
     texture_connectbutton = SDL_CreateTextureFromSurface(renderer, connectbutton);
 
     TTF_Font* Sans = TTF_OpenFont("sans.ttf", 15); 
@@ -376,9 +382,16 @@ int main(int argc, char ** argv)
 				// Cela permet d'affecter goEnabled pour autoriser l'affichage du bouton go
 				case 'M':
 				// Structure du Message: X -> IDjoueur
-				// M X
-					goEnabled = (gbuffer[2] - '0') == gId;
-					// RAJOUTER DU CODE ICI
+				// M X		
+                    goEnabled = (gbuffer[2] - '0') == gId;
+
+					break;
+				case 'F':
+				// Message 'F' : le joueur a perdu ou gagne
+				// Structure du Message: X -> IDjoueur
+				// F X	
+                    findejeu = (gbuffer[2] - '0') == gId;
+                    goEnabled = 0;
 
 					break;
 				// Message 'V' : le joueur recoit une valeur de tableCartes
@@ -710,6 +723,19 @@ int main(int argc, char ** argv)
         	SDL_Rect dstrect = { 500, 350, 200, 150 };
         	SDL_RenderCopy(renderer, texture_gobutton, NULL, &dstrect);
 	}
+
+	if (findejeu == 1)
+	{
+        	SDL_Rect dstrect = { 500, 350, 200, 150 };
+        	SDL_RenderCopy(renderer, texture_victoire, NULL, &dstrect);
+	}
+
+	if (!findejeu)
+	{
+        	SDL_Rect dstrect = { 500, 350, 200, 150 };
+        	SDL_RenderCopy(renderer, texture_defaite, NULL, &dstrect);
+	}
+
 	// Le bouton connect
 	if (connectEnabled==1)
 	{
