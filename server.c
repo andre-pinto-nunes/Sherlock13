@@ -35,7 +35,7 @@ char *nomcartes[] = {	"Sebastian Moran",
 						"James Moriarty"
 					};
 int joueurCourant;
-int listeJoueurs[4]={0,1,2,3};
+int listeJoueurs[4]={1, 1, 1, 1};
 void error(const char *msg)
 {
     perror(msg);
@@ -348,8 +348,12 @@ int main(int argc, char *argv[])
 	                               reply);
 						}
 
+                        printf("%s est le premier a jouer\n", tcpClients[joueurCourant].name);
+
 						sprintf(reply,"M %d", joueurCourant);
 	                	broadcastMessage(reply);
+
+
                 		fsmServer=1;
 					}
 
@@ -358,42 +362,37 @@ int main(int argc, char *argv[])
 		}
 		else if (fsmServer==1)
 		{
-			//printf("%s\n", buffer);
-			while(joueurCourant != listeJoueurs[joueurCourant]){
-				joueurCourant++;
-			}
-				if (joueurCourant++ > 2)
-					joueurCourant = 0;
 
-			sprintf(reply,"M %d", joueurCourant);
-           	broadcastMessage(reply);
+            printf("%s vient de jouer\n", tcpClients[buffer[2] - '0'].name);
+
 
 			switch (buffer[0])
 			{
-                	case 'G': // guess guilty
+                	case 'G':
+                    // Un joueur essaye de deviner le coupable
+                    // Structure du message:
                 	// O X Y  :  x-> id_client ; y-> coupable
                 	// 01234
-				// RAJOUTER DU CODE ICI
-                	printf("%d\n", deck[12]);
-                	printf("%d\n", buffer[4] - '0' );
+
                 	if ((buffer[4] - '0') == deck[12])
                 	{
                 		// gagne
-                		printf("hhh\n");
                 		printf("%s a gagne le jeu\n", tcpClients[buffer[2] - '0'].name);
 
                 	}else
                 	{
                 		//perdu
-                		printf("%s a perdu\n", tcpClients[buffer[2] - '0'].name);
-                		listeJoueurs[buffer[2] - '0'] = -1; // le joueur ne peut plus jouer
+                		printf("%s a accusé un inocent.\nIl a perdu et ne peut plus jouer\n", tcpClients[buffer[2] - '0'].name);
+                		listeJoueurs[joueurCourant] = 0; // le joueur ne peut plus jouer
+
                 	}
 
 				break;
                 	case 'O':
+                    // Un joueur demande qui a un certain objet
+                    // Structure du message:
                 	// O X Y  :  x-> id_client ; y-> objet
                 	// 01234
-				// RAJOUTER DU CODE ICI
 
                 	for (int i = 0; i < 4; ++i)
                 	{
@@ -410,9 +409,9 @@ int main(int argc, char *argv[])
 
 				break;
 			case 'S':
+                    // Un joueur demande a quelqu'un combien il a de cartes avec un certain objet
 					// O X Y Z  :  x-> id_client_qui_demande; y-> id_client_qui_repond ; z-> objet
                 	// 0123456
-				// RAJOUTER DU CODE ICI
 
     			sprintf(reply, "V %d %d %d", (buffer[4] - '0'), (buffer[6] - '0'), tableCartes[(buffer[4] - '0')][(buffer[6] - '0')]);
                 sendMessageToClient(tcpClients[buffer[2] - '0'].ipAddress,
@@ -422,6 +421,18 @@ int main(int argc, char *argv[])
                 	default:
                         	break;
 			}
+
+			if (++joueurCourant > 3)
+				joueurCourant = 0;
+
+			while(!listeJoueurs[joueurCourant]){
+                if (++joueurCourant > 3)
+					joueurCourant = 0;
+			}
+
+            printf("C'est au tour de %s\n", tcpClients[joueurCourant].name);
+			sprintf(reply,"M %d", joueurCourant);
+           	broadcastMessage(reply);
         }
      	close(newsockfd);
     }
