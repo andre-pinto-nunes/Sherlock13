@@ -12,4 +12,5 @@ sudo apt install libsdl2-ttf-dev
 
 ## Compilation
 
-Pour compiler il suffit d'utiliser la commande ```shell make```
+Pour compiler il suffit d'utiliser la commande ```make```.
+
