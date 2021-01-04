@@ -1,8 +1,6 @@
 CC = gcc
 CCFLAGS = -I/usr/include/SDL2 
 LIBFLAGS = -lSDL2 -lSDL2_image -lSDL2_ttf -lpthread
-SRC= $(wildcard *.cc)
-OBJ= $(SRC:.cc=.o)
 CLIENT = sh13
 SERVEUR = server
 
