@@ -373,7 +373,7 @@ int main(int argc, char *argv[])
 
             printf("%s vient de jouer\n", tcpClients[buffer[2] - '0'].name);
 
-
+            int coupable;
 			switch (buffer[0])
 			{
                 	case 'G':
@@ -382,7 +382,8 @@ int main(int argc, char *argv[])
                 	// G X Y  :  x-> id_client ; y-> coupable
                 	// 01234
 
-                	if ((buffer[4] - '0') == deck[12])
+                    coupable = atoi(strtok(buffer + 4, " \n"));
+                	if (coupable == deck[12])
                 	{
                 		// gagne
                 		printf("%s a gagne le jeu\n", tcpClients[buffer[2] - '0'].name);
