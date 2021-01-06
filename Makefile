@@ -21,4 +21,4 @@ full: clean all
 	
 	
 clean:
-	rm -f $(OBJ) $(CLIENT) $(SERVEUR)
+	rm -f $(CLIENT) $(SERVEUR)

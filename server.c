@@ -332,21 +332,28 @@ int main(int argc, char *argv[])
 						// Envoie les cartes à tout le monde
 						for (int i = 0; i < 4; ++i)		// Pour chaque joueur
 						{
+                            // On initialise le buffer avec le debut du message
 							sprintf(reply,"D");
-					
-							for (int j = 3*i; j < 3*i+3; ++j) // On envoie 3 cartes
+					        
+                            // On donne au ieme joueur les cartes deck[3 * i], deck[3 * i + 1] et deck[3 * i + 2]
+                            
+                            // Le joueur 0 prendra les cartes     deck[0]    , deck[1]         et deck[2]
+                            // Le joueur 1 prendra les cartes     deck[3]    , deck[4]         et deck[5]
+                            // Le joueur 2 prendra les cartes     deck[6]    , deck[7]         et deck[8]
+                            // Le joueur 3 prendra les cartes     deck[9]    , deck[10]        et deck[11]
+							for (int j = 3*i; j < 3*i+3; ++j)
 							{
 								sprintf(reply + strlen(reply), " %d", deck[j]);
 							}
-	
-							for (int j = 0; j < 8; ++j)					// On envoie sa ligne tableCartes
+	                        
+                            // On envoie sa ligne tableCartes
+							for (int j = 0; j < 8; ++j)
 							{
 								sprintf(reply + strlen(reply), " %d", tableCartes[i][j]);
 							}
 
-	                        sendMessageToClient(tcpClients[i].ipAddress,
-	                               tcpClients[i].port,
-	                               reply);
+                            // Envoi du message
+	                        sendMessageToClient(tcpClients[i].ipAddress, tcpClients[i].port, reply);
 						}
 
                         printf("%s est le premier a jouer\n", tcpClients[joueurCourant].name);
@@ -372,7 +379,7 @@ int main(int argc, char *argv[])
                 	case 'G':
                     // Un joueur essaye de deviner le coupable
                     // Structure du message:
-                	// O X Y  :  x-> id_client ; y-> coupable
+                	// G X Y  :  x-> id_client ; y-> coupable
                 	// 01234
 
                 	if ((buffer[4] - '0') == deck[12])
