@@ -399,7 +399,8 @@ int main(int argc, char ** argv)
 				// Structure du Message: X -> tableCartes
 				// V X Y Z : x-> id ; y -> objet ; z -> nombre d'objets
 				// 0123456
-				if (gbuffer[2] - '0' != gId)
+				
+				if (tableCartes[gbuffer[2] - '0'][gbuffer[4] - '0'] < 0 || tableCartes[gbuffer[2] - '0'][gbuffer[4] - '0'] > 9)
 				{
 					if (gbuffer[6] - '0' == 9)
 						tableCartes[gbuffer[2] - '0'][gbuffer[4] - '0'] = 100;
@@ -407,7 +408,6 @@ int main(int argc, char ** argv)
 						tableCartes[gbuffer[2] - '0'][gbuffer[4] - '0'] = gbuffer[6] - '0';
 
 				}
-					// RAJOUTER DU CODE ICI
 
 					break;
 			}

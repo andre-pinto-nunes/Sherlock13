@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include <unistd.h>
 #include <sys/types.h> 
 #include <sys/socket.h>
@@ -47,6 +48,7 @@ void melangerDeck()
 {
     int i;
     int index1,index2,tmp;
+   	srand(time(NULL));
 
     for (i=0;i<1000;i++)
     {
@@ -382,8 +384,7 @@ int main(int argc, char *argv[])
                 	// G X Y  :  x-> id_client ; y-> coupable
                 	// 01234
 
-                    coupable = atoi(strtok(buffer + 4, " \n"));
-                	if (coupable == deck[12])
+                	if (atoi(buffer + 4) == deck[12])
                 	{
                 		// gagne
                 		printf("%s a gagne le jeu\n", tcpClients[buffer[2] - '0'].name);
