@@ -274,7 +274,6 @@ int main(int argc, char ** argv)
 					sprintf(sendBuffer,"C %s %d %s",gClientIpAddress,gClientPort,gName);
 
 					sendMessageToServer(argv[1], atoi(argv[2]), sendBuffer);
-					///////////////////////////////////////////////////////////////////////////////////////////////////////// RAJOUTER DU CODE ICI
 
 					connectEnabled=0;
 				}
@@ -307,24 +306,21 @@ int main(int argc, char ** argv)
 						sprintf(sendBuffer,"G %d %d",gId, guiltSel);
 						sendMessageToServer(argv[1], atoi(argv[2]), sendBuffer);
 
-					///////////////////////////////////////////////////////////////////////////////////////////////////////// RAJOUTER DU CODE ICI
-
+				
 					}
 					else if ((objetSel!=-1) && (joueurSel==-1))
 					{
 						sprintf(sendBuffer,"O %d %d",gId, objetSel);
 						sendMessageToServer(argv[1], atoi(argv[2]), sendBuffer);
 
-					///////////////////////////////////////////////////////////////////////////////////////////////////////// RAJOUTER DU CODE ICI
-
+				
 					}
 					else if ((objetSel!=-1) && (joueurSel!=-1))
 					{
 						sprintf(sendBuffer,"S %d %d %d",gId, joueurSel,objetSel);
 						sendMessageToServer(argv[1], atoi(argv[2]), sendBuffer);
 
-					///////////////////////////////////////////////////////////////////////////////////////////////////////// RAJOUTER DU CODE ICI
-
+				
 					}
 				}
 				else
@@ -350,7 +346,6 @@ int main(int argc, char ** argv)
 				case 'I':
 					gId = gbuffer[2] - '0';
 					printf("Mon ID est :%d\n", gId);
-					// RAJOUTER DU CODE ICI
 
 					break;
 				// Message 'L' : le joueur recoit la liste des joueurs
@@ -360,7 +355,6 @@ int main(int argc, char ** argv)
 					strcpy(gNames[1], strtok(NULL, " \n"));
 					strcpy(gNames[2], strtok(NULL, " \n"));
 					strcpy(gNames[3], strtok(NULL, " \n"));
-					// RAJOUTER DU CODE ICI
 
 					break;
 				// Message 'D' : le joueur recoit ses trois cartes
@@ -374,8 +368,6 @@ int main(int argc, char ** argv)
 
 					for (int i = 0; i < 8; ++i)
 						tableCartes[gId][i] = atoi(strtok(NULL, " \n"));
-
-					// RAJOUTER DU CODE ICI
 
 					break;
 				// Message 'M' : le joueur recoit le n° du joueur courant
